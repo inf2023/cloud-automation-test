@@ -64,3 +64,23 @@ and destroys it after the run. The container has no persistent volume; stopping
 it removes its disposable data. Use only the dedicated container and its test role,
 which must be allowed to create the test database. Do not point these commands at
 an existing database service.
+
+## Android debug APK
+
+`android/` contains a minimal Kotlin app displaying **Cloud Automation Test**.
+The independent **Android debug APK** workflow runs on feature-branch pushes and
+pull requests targeting `main`, using a GitHub-hosted Ubuntu runner. It installs
+Android platform 35 and build tools 35.0.0, then runs the checked-in Gradle Wrapper
+8.13 with JDK 17, AGP 8.13.2, and Kotlin 2.2.21:
+
+```sh
+cd android
+./gradlew --no-daemon assembleDebug lintDebug
+```
+
+Open **Actions → Android debug APK → a successful run**. Under **Artifacts**,
+download **cloud-automation-debug-apk**, containing `app-debug.apk`. Artifacts are
+retained for 14 days and require a successful upload; a pushed branch alone does
+not confirm an APK exists. The APK is debug-signed for testing only. This workflow
+needs no production credentials, external secrets, emulator, or release signing.
+Existing Python and PostgreSQL workflows continue to run independently.
